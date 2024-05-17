@@ -1,0 +1,5 @@
+# a low-code web framework used for creating the web frontend.
+streamlit
+
+# Langchain is a Python library for language detection and translation using Google's Translation API.
+langchain
