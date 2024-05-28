@@ -1,6 +1,6 @@
 # ScamDetect: A Scam Detection Chatbot
 
-This Streamlit application helps you identify potential scam texts with the power of Large Language Models (LLMs).
+a Streamlit application powered by Large Language Model "LLAMA3", helps you identify potential scam texts. This scam detection chatbot analyzes user-provided text using a fine-tuned DistilBERT model, assigning a "scam" or "safe" label with likelihood. Leveraging Langchain and Ollama frameworks, it explains why a text might be risky, offering an interactive and user-friendly experience through Streamlit's user interface.
 
 ### Features:
 
