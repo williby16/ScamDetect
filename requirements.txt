@@ -3,3 +3,9 @@ streamlit
 
 # Langchain is a Python library for language detection and translation using Google's Translation API.
 langchain
+
+# transformers is used for handling pre-trained transformer-based models.
+transformers
+
+# tensorflow is necessary for running TensorFlow-based models such as for sequence classification.
+tensorflow

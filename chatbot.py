@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_community.llms import Ollama
 import streamlit as st
