@@ -4,12 +4,12 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain_community.llms import Ollama
 import streamlit as st
 import tensorflow as tf
-import pandas as pd
 
 
 # Initialize the Text Classification Model
 tokenizer = AutoTokenizer.from_pretrained("pippinnie/scam_text_classifier")
 model = TFAutoModelForSequenceClassification.from_pretrained("pippinnie/scam_text_classifier")
+
 # Initialize the Ollama model
 llm = Ollama(model="llama3")
 
@@ -53,17 +53,6 @@ def clasify_scam(text):
 
     return (label, likelihood)
 
-# takes the df from https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset and splits it into two dataframes
-def filter_format_ham(df):
-    dfSpam = df[df["v1"] == "spam"]
-    # fix the index, for the sake of the loop
-    dfSpam = dfSpam.reset_index(drop=True)
-    finals = []
-    for i in range(len(dfSpam)):
-        finals.append(["SCAM", dfSpam.loc[i, "v2"], []])
-    return finals
-    
-
 # format ["scam or legit", """message""", [empty list for results]]
 potential_scams = [["SCAM", """The USPS package has arrived at the warehouse and cannot be delivered due to incomplete address information. Please confirm your address in the link within 12 hours.
 
@@ -86,22 +75,15 @@ https://usps(.)alus-packages(.)com
 
 The USPS team wishes you a wonderful day!""", []]
  ]
+
+for i in potential_scams:
+    i[2] = clasify_scam(i[1])
     
 wrong = 0
 right = 0
 wrongPercent = 0
 rightPercent = 0
-
-
-scamsDB = pd.read_csv("spam.csv", encoding="latin-1")
-scamsDB = filter_format_ham(scamsDB)
-
-for item in scamsDB:
-    potential_scams.append(item)
-
 for i in potential_scams:
-    i[2] = clasify_scam(i[1])
-
     if (i[0] != i[2][0]):
         wrong += 1
         wrongPercent += i[2][1]
@@ -119,42 +101,3 @@ print("Right: ", rightPercent*100)
 print("Wrong: ", wrongPercent*100)
 
 
-
-"""
-# larger dataset
-scamsDB = pd.read_csv("spam.csv", encoding="latin-1")
-scamsDB.rename(columns={"Unnamed: 2": "rating"})
-scamsDB.rename(columns={"Unnamed: 3": "certainty"})
-
-wrong = 0
-right = 0
-wrongPercent = 0
-rightPercent = 0
-for i in range(len(scamsDB)): # v1 : spam or not # v2 : raw message # Unnamed: 2 Ill store certianty
-    isSpam = scamsDB.loc[i, "v1"]
-    if (isSpam == "ham"):
-        isSpam = "SAFE"
-    else:
-        isSpam = "SPAM"
-    message = scamsDB.loc[i, "v2"]
-    res = clasify_scam(scamsDB.loc[i, "v2"])
-    scamsDB.loc[i, "certainty"] = res[0]
-    scamsDB.loc[i, "rating"] = res[1]
-    aiSpam = res[0]
-    aiCert = res[1]
-    
-    if (isSpam == aiSpam):
-        right += 1
-        rightPercent += aiCert
-    else:
-        wrong += 1
-        wrongPercent += aiCert
-    
-wrongPercent /= wrong
-rightPercent /= right
-        
-print("Bot Accuracy: ", (right/(right+wrong))*100)
-print("Bot Certinty: ")
-print("Right: ", rightPercent*100)
-print("Wrong: ", wrongPercent*100)
-"""
